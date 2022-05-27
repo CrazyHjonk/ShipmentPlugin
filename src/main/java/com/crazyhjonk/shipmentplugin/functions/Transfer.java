@@ -5,6 +5,7 @@ import com.crazyhjonk.shipmentplugin.Port;
 import com.crazyhjonk.shipmentplugin.ShipmentPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
@@ -140,13 +141,13 @@ public class Transfer {
         if (sendingPort > index) sendingPort--;
         else if (sendingPort == index) {
             ShipmentPlugin.getEconomy().depositPlayer(offlinePlayer, price);
-            if (offlinePlayer.isOnline()) player.sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
+            if (offlinePlayer.isOnline()) Objects.requireNonNull(offlinePlayer.getPlayer()).sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
             activeTransfers.remove(this);
         }
         if (receivingPort > index) receivingPort--;
         else if (receivingPort == index) {
             ShipmentPlugin.getEconomy().depositPlayer(offlinePlayer, price);
-            if (offlinePlayer.isOnline()) player.sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
+            if (offlinePlayer.isOnline()) Objects.requireNonNull(offlinePlayer.getPlayer()).sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
             activeTransfers.remove(this);
         }
     }
@@ -163,10 +164,14 @@ public class Transfer {
     }
 
     public void confirmTransfer() {
+        fetchInventories();
+        if (currentInventories[0].isEmpty() && currentInventories[1].isEmpty()) {
+            Objects.requireNonNull(offlinePlayer.getPlayer()).sendMessage("§cYou don't have any items to transfer.");
+            return;
+        }
         Interaction.get(player).setPendingConfirmation(false);
         Bukkit.getScheduler().runTask(ShipmentPlugin.getMain(), player::closeInventory);
         if (!handlePrice()) return;
-        fetchInventories();
         fetchItems();
         new BukkitRunnable() {
             @Override
@@ -207,6 +212,7 @@ public class Transfer {
                     if (index >= capacity) break;
                     ItemStack content = currentInventories[i].getContents()[j];
                     if (content != null) {
+                        if (content.getType() == Material.SHULKER_BOX) continue;
                         itemsToTransferMap[i].put(j, content);
                         itemsToTransfer[index] = content;
                         index++;
