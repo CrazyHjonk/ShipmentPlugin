@@ -1,7 +1,6 @@
 package com.crazyhjonk.shipmentplugin;
 
 import com.crazyhjonk.shipmentplugin.functions.FileHandler;
-import com.crazyhjonk.shipmentplugin.functions.boatTestCommand;
 import com.crazyhjonk.shipmentplugin.listeners.BlockListener;
 import com.crazyhjonk.shipmentplugin.listeners.ClickListener;
 import com.crazyhjonk.shipmentplugin.listeners.OpenListener;
@@ -34,13 +33,13 @@ public class ShipmentPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
         FileHandler.loadPorts();
         FileHandler.loadTransfers();
-        this.getCommand("boatTestCommand").setExecutor(new boatTestCommand());
-
+        //this.getCommand("boatTestCommand").setExecutor(new boatTestCommand());
     }
 
     @Override
     public void onDisable() {
-
+        FileHandler.updateTransfersFile();
+        FileHandler.updatePortsFile();
     }
 
     private boolean setupEconomy() {

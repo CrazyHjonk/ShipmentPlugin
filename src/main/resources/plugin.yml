@@ -4,5 +4,5 @@ main: com.crazyhjonk.shipmentplugin.ShipmentPlugin
 api-version: 1.18
 depend: [Vault]
 commands:
-  boatTestCommand:
-    description: description
+  #boatTestCommand:
+  #  description: description
