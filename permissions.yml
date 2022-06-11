@@ -1,0 +1,20 @@
+permissions:
+  shipment.*:
+    description: gives access to all admin perms
+    children:
+      shipment.create: true
+      shipment.setname: true
+      shipment.setavailable: true
+      shipment.use: true
+  shipment.create:
+    description: allows creating and modifying ports
+    default: op
+  shipment.setname:
+    description: allows setting the name of a port
+    default: op
+  shipment.setavailable:
+    description: allows setting available ports
+    default: op
+  shipment.use:
+    description: allows using ports
+    default: true
