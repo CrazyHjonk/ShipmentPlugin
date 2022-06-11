@@ -15,7 +15,7 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onPlaceBlock(@NotNull BlockPlaceEvent event) {
-        if (!event.getPlayer().isOp()) return;
+        if (!event.getPlayer().hasPermission("shipment.create")) return;
         if (event.getBlock().getType() != Material.CRAFTING_TABLE) return;
         Block block = event.getBlock();
         int X = block.getX();

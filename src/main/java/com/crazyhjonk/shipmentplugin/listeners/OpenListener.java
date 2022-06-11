@@ -18,6 +18,7 @@ public class OpenListener implements Listener {
     public void onOpenUse(PlayerInteractEvent event) {
         if (!event.hasBlock()) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getPlayer().hasPermission("shipment.use")) return;
         if (Port.getPorts() == null) return;
         int portIndex = getPortIndex(Objects.requireNonNull(event.getClickedBlock()).getLocation());
         if (portIndex == -1) return;

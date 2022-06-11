@@ -13,9 +13,11 @@ public class AdminSettings {
 
     public static void mainGUI(Player player) {
         Inventory inventory = Bukkit.createInventory(player, 9, "§6Admin Settings");
-        inventory.setItem(2, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayname("§5Set Name").
+        if (player.hasPermission("shipment.setname"))
+            inventory.setItem(2, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayname("§5Set Name").
                 setLore("§3Set the Port's Name").build());
-        inventory.setItem(6, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayname("§5Set Available Ports").
+        if (player.hasPermission("shipment.setavailable"))
+            inventory.setItem(6, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayname("§5Set Available Ports").
                 setLore("§3Set reachable Ports").build());
         inventory.setItem(8, new ItemBuilder(Material.ARROW).setDisplayname("§3Back").build());
         Bukkit.getScheduler().runTask(ShipmentPlugin.getMain(), () -> player.openInventory(inventory));

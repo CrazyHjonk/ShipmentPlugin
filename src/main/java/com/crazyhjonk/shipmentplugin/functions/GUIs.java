@@ -51,7 +51,7 @@ public class GUIs {
                 .setLore("§b§o" + Interaction.get(player).getCurrentPort().getName()).build());
         inventory.setItem(6, new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayname("§2Receive Items")
                 .setLore("§3Use this to receive items from players").build());
-        if (player.isOp()) inventory.setItem(8, new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
+        if (player.hasPermission("shipment.setname") || player.hasPermission("shipment.setavailable")) inventory.setItem(8, new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
                 .setDisplayname("§3Admin Settings").setLore("§3Enter Admin Settings").build());
         Bukkit.getScheduler().runTask(ShipmentPlugin.getMain(), () -> player.openInventory(inventory));
     }
