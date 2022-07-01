@@ -16,7 +16,7 @@ public class ShipmentPlugin extends JavaPlugin {
     private static ShipmentPlugin main;
 
     private static Economy econ = null;
-    private static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = Bukkit.getLogger();
 
 
 

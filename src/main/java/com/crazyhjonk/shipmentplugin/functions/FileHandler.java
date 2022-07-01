@@ -10,13 +10,24 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class FileHandler {
 
     @SuppressWarnings("ConstantConditions")
     public static void loadPorts() {
         File portsFile = new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ShipmentPlugin")).getDataFolder() + File.separator + "PortsDatabase.yml");
+        try {
+            boolean result;
+            result = portsFile.createNewFile();
+            if (result) System.out.println("Ports File created at " + portsFile.getCanonicalPath());
+            else Bukkit.getLogger().info("Ports File exists at " + portsFile.getCanonicalPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         FileConfiguration portsData = YamlConfiguration.loadConfiguration(portsFile);
         try {
             portsData.load(portsFile);
@@ -60,6 +71,14 @@ public class FileHandler {
     @SuppressWarnings("ConstantConditions")
     public static void loadTransfers() {
         File transfersFile = new File(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("ShipmentPlugin")).getDataFolder() + File.separator + "TransfersDatabase.yml");
+        try {
+            boolean result;
+            result = transfersFile.createNewFile();
+            if (result) System.out.println("Transfers File created at " + transfersFile.getCanonicalPath());
+            else Bukkit.getLogger().info("Transfers File exists at " + transfersFile.getCanonicalPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         FileConfiguration transfersData = YamlConfiguration.loadConfiguration(transfersFile);
         try {
             transfersData.load(transfersFile);
