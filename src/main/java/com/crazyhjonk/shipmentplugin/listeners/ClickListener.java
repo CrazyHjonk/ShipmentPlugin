@@ -48,7 +48,7 @@ public class ClickListener implements Listener {
             }
             return;
         }*/
-        //Currently, checking for interaction with port barrels isn't needed - I left it in in case I need it at some later point
+        //Currently, checking for interaction with port barrels isn't needed - I left it in, in case I need it at some later point
         event.setCancelled(true);
         ItemStack item = event.getCurrentItem();
         if (item.getItemMeta() == null) return;

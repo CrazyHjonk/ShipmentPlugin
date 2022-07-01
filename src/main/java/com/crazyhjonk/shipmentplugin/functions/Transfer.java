@@ -21,6 +21,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Transfer {
 
     private static final List<Transfer> activeTransfers = new ArrayList<>();
+
+    private static int latestTransferID = 0;
+    public static int getLatestTransferID() {
+        return latestTransferID;
+    }
+
+    public static void setLatestTransferID(int latestTransferID) {
+        Transfer.latestTransferID = latestTransferID;
+    }
+
     public static List<Transfer> getActiveTransfers() {
         return activeTransfers;
     }
@@ -35,6 +45,11 @@ public class Transfer {
     private final OfflinePlayer offlinePlayer;
     public OfflinePlayer getOfflinePlayer() {
         return offlinePlayer;
+    }
+
+    private int ID;
+    public int getID() {
+        return ID;
     }
 
     private final int capacity;
@@ -98,7 +113,7 @@ public class Transfer {
         initiateTransfer();
     }
 
-    public Transfer(UUID uuid, int option, double time, int sendingPort, int receivingPort, ItemStack[] itemsToTransfer) {
+    public Transfer(int ID, UUID uuid, int option, double time, int sendingPort, int receivingPort, ItemStack[] itemsToTransfer) {
         this.economy = ShipmentPlugin.getEconomy();
         this.offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         if (offlinePlayer.isOnline()) {
@@ -111,18 +126,19 @@ public class Transfer {
         this.time = time;
         if (option == -2) {
             //admin option
+            this.ID = ID;
             this.capacity = 8;
             this.duration = 1.0/30.0;
             this.price = 0;
             this.risk = 0;
         }
         else {
+            this.ID = ID;
             this.capacity = GUIs.getCapacity(option);
             this.duration = GUIs.getDuration(option);
             this.price = GUIs.getPrice(option);
             this.risk = GUIs.getRisk(option);
         }
-
         fetchInventories();
         if (java.time.Clock.systemUTC().millis() > time) {
             completed = true;
@@ -137,19 +153,21 @@ public class Transfer {
         }
     }
 
-    public void handleRemovedPort(int index) {
+    public boolean handleRemovedPort(int index) {
+        boolean remove = false;
         if (sendingPort > index) sendingPort--;
         else if (sendingPort == index) {
             ShipmentPlugin.getEconomy().depositPlayer(offlinePlayer, price);
             if (offlinePlayer.isOnline()) Objects.requireNonNull(offlinePlayer.getPlayer()).sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
-            activeTransfers.remove(this);
+            remove = true;
         }
         if (receivingPort > index) receivingPort--;
         else if (receivingPort == index) {
             ShipmentPlugin.getEconomy().depositPlayer(offlinePlayer, price);
             if (offlinePlayer.isOnline()) Objects.requireNonNull(offlinePlayer.getPlayer()).sendMessage("§3Since a port which was part of a transfer of yours was destroyed, the price has been refunded.");
-            activeTransfers.remove(this);
+            remove = true;
         }
+        return remove;
     }
 
     public static boolean checkActiveTransfers(Port port) {
@@ -180,6 +198,9 @@ public class Transfer {
             }
         }.runTaskLater(ShipmentPlugin.getMain(), (long) (duration * 72000L));
         this.time = java.time.Clock.systemUTC().millis() + duration * 3600000L;
+        Transfer.latestTransferID++;
+        this.ID = Transfer.latestTransferID;
+        FileHandler.logTransfer(this);
         activeTransfers.add(this);
         FileHandler.updateTransfersFile();
         player.sendMessage("§3The Transport will commence in " + (int) duration + " hour(s). Items have been removed from the Departure Barrels.");

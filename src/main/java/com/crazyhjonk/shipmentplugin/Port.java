@@ -24,7 +24,11 @@ public class Port {
     public static void removePort(Location location) {
         int index = ports.indexOf(findPort(location));
         ports.forEach(port -> port.handleRemovedPort(index));
-        Transfer.getActiveTransfers().forEach(transfer -> transfer.handleRemovedPort(index));
+        List<Transfer> transfersToRemove = new ArrayList<>();
+        Transfer.getActiveTransfers().forEach(transfer -> {
+            if (transfer.handleRemovedPort(index)) transfersToRemove.add(transfer);
+        });
+        Transfer.getActiveTransfers().removeAll(transfersToRemove);
         ports.remove(index);
     }
 
